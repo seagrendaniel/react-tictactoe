@@ -62,3 +62,8 @@ button:hover {
   color: white;
   background-color: black;
 }
+
+.reset {
+  margin: 5px auto;
+  width: 100px;
+}

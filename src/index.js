@@ -49,86 +49,100 @@ class Board extends Component {
 
 class Game extends React.Component {
     constructor(props) {
-      super(props);
-      this.state = {
-        history: [
-          {
-            squares: Array(9).fill(null)
-          }
-        ],
-        stepNumber: 0,
-        xIsNext: true
-      };
+        super(props);
+        this.state = {
+            history: [
+                {
+                    squares: Array(9).fill(null)
+                }
+            ],
+            stepNumber: 0,
+            xIsNext: true
+        };
     }
-  
+
     handleClick(i) {
-      const history = this.state.history.slice(0, this.state.stepNumber + 1);
-      const current = history[history.length - 1];
-      const squares = current.squares.slice();
-      if (calcWinner(squares) || squares[i]) {
-        return;
-      }
-      squares[i] = this.state.xIsNext ? "X" : "O";
-      this.setState({
-        history: history.concat([
-          {
-            squares: squares
-          }
-        ]),
-        stepNumber: history.length,
-        xIsNext: !this.state.xIsNext
-      });
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        const current = history[history.length - 1];
+        const squares = current.squares.slice();
+        if (calcWinner(squares) || squares[i]) {
+            return;
+        }
+        squares[i] = this.state.xIsNext ? "X" : "O";
+        this.setState({
+            history: history.concat([
+                {
+                    squares: squares
+                }
+            ]),
+            stepNumber: history.length,
+            xIsNext: !this.state.xIsNext
+        });
     }
-  
+
     jumpTo(step) {
-      this.setState({
-        stepNumber: step,
-        xIsNext: (step % 2) === 0
-      });
+        this.setState({
+            stepNumber: step,
+            xIsNext: (step % 2) === 0
+        });
     }
-  
+
     render() {
-      const history = this.state.history;
-      const current = history[this.state.stepNumber];
-      const winner = calcWinner(current.squares);
-  
-      const moves = history.map((step, move) => {
-        const desc = move ?
-          'Go to move #' + move :
-          'Go to game start';
+        const history = this.state.history;
+        const current = history[this.state.stepNumber];
+        const winner = calcWinner(current.squares);
+
+        const moves = history.map((step, move) => {
+            const desc = move ?
+                'Go to move #' + move :
+                'Go to game start';
+            return (
+                <li key={move}>
+                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                </li>
+            );
+        });
+
+
+
+        let status;
+        if (winner) {
+            status = "Winner: " + winner;
+        } else if (!winner && this.state.stepNumber === 9) {
+            status = `It's a tie!`;
+        } else {
+            status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+        }
+
         return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
+            <div className="game">
+                <div className="game-info">
+                    <h1>React Tic Tac Toe</h1>
+                    <div>{status}</div>
+                </div>
+                <div className="game-board">
+                    <Board
+                        squares={current.squares}
+                        onClick={i => this.handleClick(i)}
+                    />
+                </div>
+                <button className="reset" onClick={() =>
+                    this.setState({
+                        history: [{
+                            squares: Array(9).fill(null)
+                        }],
+                        xIsNext: true,
+                        stepNumber: 0
+                    })
+                }>
+                    Reset Game
+                    </button>
+
+                <ol className="moves-list">{moves}</ol>
+            </div>
         );
-      });
-  
-      let status;
-      if (winner) {
-        status = "Winner: " + winner;
-      } else if(!winner && this.state.stepNumber === 9) {
-        status = `It's a tie!`;
-      } else {
-        status = "Next player: " + (this.state.xIsNext ? "X" : "O");
-      }
-  
-      return (
-        <div className="game">
-          <div className="game-info">
-            <h1>React Tic Tac Toe</h1>
-            <div>{status}</div>
-          </div>
-          <div className="game-board">
-            <Board
-              squares={current.squares}
-              onClick={i => this.handleClick(i)}
-              />
-          </div>
-              <ol className="moves-list">{moves}</ol>
-        </div>
-      );
     }
-  }
+}
 
 // ========================================
 
