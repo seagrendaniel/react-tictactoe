@@ -42,9 +42,23 @@ ol, ul {
 
 .game {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .game-info {
-  margin-left: 20px;
+  margin: auto;
+  text-align: center;
+}
+
+.game-board {
+  margin: 20px auto;
+}
+
+.moves-list {
+  margin: 20px auto;
+}
+
+button:hover {
+  color: white;
+  background-color: black;
 }
